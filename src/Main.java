@@ -30,7 +30,7 @@ public class Main {
         if(currentUser.userType == 1){
             showAdminMenu();
         }else{
-
+            showDoctorMenu();
         }
     }
 
@@ -126,7 +126,7 @@ public class Main {
     public static void showAdminMenu(){
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("---- ADMIN MENU -----");
+        System.out.println("---- MENÚ ADMIN -----");
         System.out.println("1) Dar de alta un doctor");
         int response = sc.nextInt();
 
@@ -147,7 +147,7 @@ public class Main {
             System.out.println("Ingresa la contraseña: ");
             String password = sc.nextLine();
 
-            // Ruta archivo
+            // Escribir a archivo
             String directory = "C:\\Users\\Felipe Perez\\IdeaProjects\\EvidenciaFinal\\src\\db\\Usuarios.txt";
             File myFile = new File(directory);
 
@@ -162,7 +162,70 @@ public class Main {
         }else{
             System.out.println("Respuesta invalida");
         }
+    }
 
+    public static void showDoctorMenu(){
+        Scanner sc = new Scanner(System.in);
 
+        System.out.println("---- MENÚ DOCTORES -----");
+        System.out.println("1) Dar de alta un paciente");
+        System.out.println("2) Crear cita");
+
+        int response = sc.nextInt();
+
+        switch (response){
+            case 1:
+              createPatient();
+              break;
+            case 2:
+                createAppointment();
+                break;
+            default:
+                System.out.println("");
+                break;
+        }
+    }
+
+    public static void createPatient(){
+        Scanner sc = new Scanner(System.in);
+        int id = patientList.size() + 1;
+
+        System.out.println("Ingresa el nombre del paciente: ");
+        String name = sc.nextLine();
+
+        // Escribir a archivo
+        String directory = "C:\\Users\\Felipe Perez\\IdeaProjects\\EvidenciaFinal\\src\\db\\Pacientes.txt";
+        File myFile = new File(directory);
+
+        try {
+            FileWriter myWriter = new FileWriter(myFile, true);
+            myWriter.write(System.lineSeparator() + id + "," + name);
+            myWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void createAppointment(){
+        Scanner sc = new Scanner(System.in);
+        int id = appointmentList.size() + 1;
+
+        System.out.println("Ingresa la fecha de la cita (Dia/Mes/Año:Hora:Minutos): ");
+        String date = sc.nextLine();
+
+        System.out.println("Ingresa el motivo de la cita");
+        String reason = sc.nextLine();
+
+        // Escribir a archivo
+        String directory = "C:\\Users\\Felipe Perez\\IdeaProjects\\EvidenciaFinal\\src\\db\\Citas.txt";
+        File myFile = new File(directory);
+
+        try {
+            FileWriter myWriter = new FileWriter(myFile, true);
+            myWriter.write(System.lineSeparator() + id + "," + date + "," + reason);
+            myWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
