@@ -1,13 +1,17 @@
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+
+    public static User currentUser;
+    static ArrayList<User> userList = new ArrayList<>();
+    static ArrayList<Patient> patientList = new ArrayList<>();
+    static ArrayList<Appointment> appointmentList = new ArrayList<>();
     public static void main(String[] args) {
-        ArrayList<User> userList = new ArrayList<>();
-        ArrayList<Patient> patientList = new ArrayList<>();
-        ArrayList<Appointment> appointmentList = new ArrayList<>();
 
         // Cargar data de los .txt
         try {
@@ -21,7 +25,13 @@ public class Main {
         System.out.println(userList);
 
         // Login
-        loginMenu(userList);
+        currentUser = loginMenu();
+
+        if(currentUser.userType == 1){
+            showAdminMenu();
+        }else{
+
+        }
     }
 
     public static ArrayList<User> loadUserData(ArrayList<User> users){
@@ -79,7 +89,7 @@ public class Main {
         return appointments;
     }
 
-    public static void loginMenu(ArrayList<User> users){
+    public static User loginMenu(){
         Scanner sc = new Scanner(System.in);
         User userSelected = new User();
 
@@ -92,8 +102,8 @@ public class Main {
         String password = sc.nextLine();
 
         // Revisar si el usuario y contraseña existen
-        for (int i = 0; i < users.size(); i++) {
-            userSelected = users.get(i);
+        for (int i = 0; i < userList.size(); i++) {
+            userSelected = userList.get(i);
 
             if(userSelected.username.equals(username) && userSelected.password.equals(password)){
                 break;
@@ -105,7 +115,54 @@ public class Main {
         if(userSelected == null){
             System.out.println("No existe el usuario");
         }else{
-            System.out.println("Bienvenido, " + userSelected.name + ". Tu tipo de usuario es: " + userSelected.userType);
+            System.out.println("Bienvenido, " + userSelected.name +
+                    ". Tu tipo de usuario es: " + userSelected.userType);
+
         }
+
+        return userSelected;
+    }
+
+    public static void showAdminMenu(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("---- ADMIN MENU -----");
+        System.out.println("1) Dar de alta un doctor");
+        int response = sc.nextInt();
+
+        if(response == 1){
+            int id = userList.size() + 1;
+            int userType = 0;
+
+            sc.nextLine();
+            System.out.println("Ingresa el nombre del doctor: ");
+            String name = sc.nextLine();
+
+            System.out.println("Ingresa la especialidad: ");
+            String speciality = sc.nextLine();
+
+            System.out.println("Ingresa el nombre de usuario: ");
+            String username = sc.nextLine();
+
+            System.out.println("Ingresa la contraseña: ");
+            String password = sc.nextLine();
+
+            // Ruta archivo
+            String directory = "C:\\Users\\Felipe Perez\\IdeaProjects\\EvidenciaFinal\\src\\db\\Usuarios.txt";
+            File myFile = new File(directory);
+
+            try {
+                FileWriter myWriter = new FileWriter(myFile, true);
+                myWriter.write(System.lineSeparator() + id + "," + name + "," + speciality + ","
+                        + userType + "," +  username + "," + password);
+                myWriter.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            System.out.println("Respuesta invalida");
+        }
+
+
     }
 }
